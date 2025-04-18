@@ -1,17 +1,35 @@
-name: "snyk code test"
-on: [push, pull_request]
+name: "Snyk Code Scan"
+
+on:
+  push:
+    branches:
+      - master
+
 jobs:
-  snyk:
+  Pipeline-Job:
+    # Configure Environment
+    name: 'Snyk Code Scan'
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: snyk/actions/setup@master
-      - name: Snyk Code Test
+      # Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v1
+
+      # Install and Authenticate to Snyk
+      - name: Install Snyk & Authenticate
+        run: |
+          sudo npm install -g snyk
+          snyk auth ${SNYK_TOKEN}
+      # Run Snyk Code
+      - name: Run Snyk Code
+        run: |
+          snyk code test --sarif  > results.sarif
         continue-on-error: true
-        run: snyk code test --org=${{ secrets.SNYK_ORG }} --sarif > snyk_sarif 
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      - name: Upload results to Github Code Scanning
+      - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: snyk_sarif
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: results.sarif
