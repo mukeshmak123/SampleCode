@@ -17,12 +17,7 @@
 # and fail PR checks, see https://github.com/snyk/actions/
 
 name: Snyk Security
-
-on:
-  push:
-    branches: ["master" ]
-  pull_request:
-    branches: ["master"]
+on: [push, pull_request]
 
 permissions:
   contents: read
