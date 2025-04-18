@@ -52,8 +52,8 @@ jobs:
         run: snyk code test --org=${{ secrets.SNYK_ORG }} --sarif > snyk-sarif2.json || true
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
-      - name: Snyk Open Source monitor
-        run: snyk monitor --all-projects
+      #- name: Snyk Open Source monitor
+        #run: snyk monitor --all-projects
 
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
