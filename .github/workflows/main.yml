@@ -11,7 +11,11 @@ jobs:
       - uses: snyk/actions/setup@master
       - name: Snyk Code Test
         continue-on-error: true
-        run: snyk code test
+        run: snyk code test --org=${{ secrets.SNYK_ORG }} --json > snyk-report.json
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         #run: snyk monitor --all-projects
+      - name: Upload json file
+        uses: github/codeql-action/upload-json@v3
+        with:
+          json_file: snyk-report.json
