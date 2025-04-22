@@ -2,6 +2,9 @@
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 name: Snyk Security
+permissions:
+  contents: read
+  pull-requests: write
 on: [push, pull_request]
 jobs:
   snyk:
