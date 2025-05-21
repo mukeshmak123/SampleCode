@@ -5,31 +5,33 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebFox.Controllers
 {
-    public class SecureCookieTest1: ControllerBase
+    public class SecureCookieTest1 : ControllerBase
     {
-        [HttpGet("{response}")]
-        [HttpGet("{request}")]
-        
-        // HttpCookie myCookie = new HttpCookie("Sensitive cookie");
-        public void DoPost(HttpWebResponse response, HttpWebRequest request)
+        [HttpGet]
+        [HttpPost]
+        public IActionResult DoPost()
         {
-            DoGet(response, request);
+            return DoGet();
         }
 
-        public void DoGet(HttpWebResponse response, HttpWebRequest request)
+        public IActionResult DoGet()
         {
-            Unsafe(response, request);
+            Unsafe();
+            return Ok();
         }
 
-        public void Unsafe(HttpWebResponse response, HttpWebRequest request)
+        public void Unsafe()
         {
             string password = "p-" + RandomNumberGenerator.GetInt32(200000000, 2000000000);
-            
-            Cookie cookie = new Cookie("password",password);
-            cookie.Path = "/";
-            cookie.Domain = "";
-            cookie.Comment = "Cookie Description";
-            response.Cookies.Add(cookie);
+
+            var cookieOptions = new CookieOptions
+            {
+                Path = "/",
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("password", password, cookieOptions);
         }
     }
 }
